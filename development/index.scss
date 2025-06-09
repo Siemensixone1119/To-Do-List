@@ -127,8 +127,7 @@ thead {
   font-weight: 400;
 }
 
-input,
-.custom-select {
+input {
   padding: 5px 7px;
   border: 1px solid #000;
   font-size: 16px;
@@ -166,6 +165,7 @@ label {
 .label {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   width: 35vw;
   margin-top: 33px;
 }
@@ -190,13 +190,41 @@ label {
   color: #fff;
 }
 
-.btn1:hover{
+.btn1:hover {
   background-color: #4672df;
 
 }
 
 .range {
-  width: 21vw;
+  padding: 0;
+  appearance: none;
+  width: 22vw;
+  height: 5px;
+  border-radius: 5px;
+  border: none;
+  color: #000;
+  margin: 0;
+  background: #9C9C9C;
+}
+
+.range:focus {
+  border: none;
+}
+
+.range:hover {
+  cursor: pointer;
+}
+
+.range::-webkit-slider-thumb {
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #797979;
+}
+
+.range::-webkit-slider-thumb:hover {
+  cursor: pointer;
 }
 
 .wrap {
@@ -204,3 +232,73 @@ label {
   flex-direction: column;
   justify-content: space-between;
 }
+
+
+.custom-select {
+  position: relative;
+  width: 22vw;
+  font-family: inherit;
+  cursor: pointer;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #000;
+}
+
+.custom-select li {
+  padding: 5px 7px;
+  border: 1px solid #000;
+  background: white;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Первый (заголовок) */
+.custom-select li:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: none;
+  z-index: 2;
+  position: relative;
+}
+
+/* Стрелка */
+.custom-select li:first-child::after {
+  content: url("./assets/image/arrow.svg");
+  display: inline-block;
+  padding-left: 5px;
+  height: 16px;
+}
+
+/* Выпадающие элементы — изначально скрыты */
+.custom-select li:not(:first-child) {
+  position: absolute;
+  left: 0;
+  z-index: 10;
+  width: 100%;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.2s ease;
+}
+
+/* При наведении — показать */
+.custom-select:hover li:not(:first-child) {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Смещения вниз для каждого элемента */
+.custom-select li:nth-child(2) {
+  top: 100%;
+}
+
+.custom-select li:nth-child(3) {
+  top: 200%;
+}
+
+.custom-select li:nth-child(4) {
+  top: 300%;
+}
+
+/* Добавь больше, если больше опций */

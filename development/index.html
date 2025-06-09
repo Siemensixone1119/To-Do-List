@@ -130,34 +130,34 @@
             </div>
             <div class="label">
               <label for="date">Date:</label>
-              <input type="text" placeholder="dd/mm/yyyy  - can be omitted" id="date">
+              <input type="date" placeholder="dd/mm/yyyy  - can be omitted" id="date">
             </div>
             <div class="label">
               <label for="time">Time:</label>
-              <input type="text" placeholder="hh:mm - can be omitted" id="time">
+              <input type="time" placeholder="hh:mm - can be omitted" id="time">
             </div>
           </div>
           <div class="wrap">
             <div class="form__2">
             <div class="label">
               <label for="priority">Priority:</label>
-              <select class="custom-select" id="priority">
-                <option selected>select from dropdown</option>
-                <option>Option 1</option>
-                <option>Option 2</option>
-              </select>
+              <ul class="custom-select" id="priority">
+                <li selected>select from dropdown</li>
+                <li>Option 1</li>
+                <li>Option 2</li>
+              </ul>
             </div>
             
             <div class="label">
               <label for="fulfillment">Fulfillment:</label>
-              <input type="range" id="fulfillment"  class="range">
+              <input type="range" id="fulfillment"  class="range" min="0" max="100" value="0">
             </div>
           </div>
 
 
           <ul class="btn__list">
             <li>
-              <button class="btn1">Save</button>
+              <button class="btn1" type="submit">Save</button>
             </li>
             <li>
               <button >Cancel</button>
