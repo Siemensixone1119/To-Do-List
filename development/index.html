@@ -14,9 +14,9 @@
 <body>
   <main>
     <h1>To-Do List</h1>
-    <!-- <div>
+    <div class="ToDo">
       <div class=" btn__cont">
-        <button class="btn">
+        <button class="btn" id="addBtn">
           <p>Add a new to-do</p>
         </button>
         <ul class="btn__cont--do">
@@ -35,75 +35,11 @@
       <div>
         <table>
           <thead>
-            <tr>
-              <th>Task</th>
-              <th>Description</th>
-              <th>Category</th>
-              <th>When</th>
-              <th>Priority</th>
-              <th>Fulfillment</th>
-              <th></th>
-            </tr>
-          </thead>
           <tbody>
-            <tr>
-              <td>Learn React</td>
-              <td>Managing State, Escape Hatches, Effects</td>
-              <td>Programming</td>
-              <td>–</td>
-              <td>High</td>
-              <td>30%</td>
-              <td>
-                <button>
-                  <img src="./assets/image/edit.svg" alt="">
-                </button>
-              </td>
-              <td>
-                <button>
-                  <img src="./assets/image/delete.svg" alt="">
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>Shopping</td>
-              <td>Potatoes, Onions, Eggs, Olive Oil</td>
-              <td>Household</td>
-              <td>26.02.2023</td>
-              <td>High</td>
-              <td>0%</td>
-              <td>
-                <button>
-                  <img src="./assets/image/edit.svg" alt="">
-                </button>
-              </td>
-              <td>
-                <button>
-                  <img src="./assets/image/delete.svg" alt="">
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>Buy the tickets</td>
-              <td>at cheaptickets.com/shanghai</td>
-              <td>Travel</td>
-              <td>12.01.2023<br>12:00</td>
-              <td>Medium</td>
-              <td>100%</td>
-              <td>
-                <button>
-                  <img src="./assets/image/edit.svg" alt="">
-                </button>
-              </td>
-              <td>
-                <button>
-                  <img src="./assets/image/delete.svg" alt="">
-                </button>
-              </td>
-            </tr>
           </tbody>
         </table>
       </div>
-    </div> -->
+    </div>
 
 
 
@@ -111,7 +47,7 @@
 
 
 
-    <div>
+    <div class="is-hidden addToDo">
       <form action="">
         <h2>Add a new to-do:</h2>
         <div class="form">
@@ -139,30 +75,30 @@
           </div>
           <div class="wrap">
             <div class="form__2">
-            <div class="label">
-              <label for="priority">Priority:</label>
-              <ul class="custom-select" id="priority">
-                <li selected>select from dropdown</li>
-                <li>Option 1</li>
-                <li>Option 2</li>
-              </ul>
+              <div class="label">
+                <label for="priority">Priority:</label>
+                <ul class="custom-select" id="priority">
+                  <li selected>Low</li>
+                  <li>Medium</li>
+                  <li>High</li>
+                </ul>
+              </div>
+
+              <div class="label">
+                <label for="fulfillment">Fulfillment:</label>
+                <input type="range" id="fulfillment" class="range" min="0" max="100" value="0">
+              </div>
             </div>
-            
-            <div class="label">
-              <label for="fulfillment">Fulfillment:</label>
-              <input type="range" id="fulfillment"  class="range" min="0" max="100" value="0">
-            </div>
-          </div>
 
 
-          <ul class="btn__list">
-            <li>
-              <button class="btn1" type="submit">Save</button>
-            </li>
-            <li>
-              <button >Cancel</button>
-            </li>
-          </ul>
+            <ul class="btn__list">
+              <li>
+                <button class="btn1" type="submit" id="saveBtn">Save</button>
+              </li>
+              <li>
+                <button id="closeBtn">Cancel</button>
+              </li>
+            </ul>
           </div>
         </div>
 

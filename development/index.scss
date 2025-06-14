@@ -14,6 +14,25 @@ body {
   background-size: cover;
 }
 
+.pnotify {
+  font-family: var(--font-family);
+  font-size: 18px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  color: #333;
+  max-width: 300px;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+
+.pnotify-success {
+  border: 3px solid #28a745;
+}
+
+.pnotify-error {
+  border: 3px solid #dc3545;
+}
 
 p,
 span,
@@ -70,6 +89,10 @@ button {
 button:hover {
   cursor: pointer;
   background: rgb(255, 255, 255);
+}
+
+.is-hidden {
+  display: none;
 }
 
 .btn {
