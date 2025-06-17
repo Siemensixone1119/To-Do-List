@@ -1,31 +1,31 @@
 {
   "ToDo": [
     {
-      "task": "Александра Денисовна Баранова",
-      "description": "meeeeee",
-      "category": "mememe",
-      "when": " ",
-      "priority": "High",
-      "fulfillment": "22%",
-      "id": 1
-    },
-    {
-      "task": "Александра Денисовна Баранова",
-      "description": "meeeeee",
-      "category": "mememe",
-      "when": "2025-06-17 01:07",
-      "priority": "Low",
-      "fulfillment": "41%",
+      "task": "перездать икономику",
+      "description": "у4е4еу4",
+      "category": "vaevsd",
+      "when": "2025-07-05 ",
+      "priority": "Medium",
+      "fulfillment": "16%",
       "id": 2
     },
     {
-      "task": "Александра Денисовна Баранова",
-      "description": "meeeeee",
-      "category": "mememe",
+      "task": "1",
+      "description": "1",
+      "category": "1",
       "when": " ",
-      "priority": "Low",
+      "priority": "Medium",
       "fulfillment": "0%",
       "id": 3
+    },
+    {
+      "task": "MTTT",
+      "description": "ssdvaeveeav",
+      "category": "3ее",
+      "when": " ",
+      "priority": "Low",
+      "fulfillment": "100%",
+      "id": 4
     }
   ]
 }
