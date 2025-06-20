@@ -3,67 +3,67 @@ import { success, error } from "@pnotify/core";
 import throttle from "lodash.throttle";
 import "@pnotify/core/dist/PNotify.css";
 
-const BASE_URL = "http://localhost:3000";
+const API_URL = "http://localhost:3000";
 const STORAGE_KEY = "task";
 let editingTaskId = null;
 
 const refs = {
-  addToDo: document.querySelector(".addToDo"),
-  ToDo: document.querySelector(".ToDo"),
-  addBtn: document.querySelector("#addBtn"),
-  closeBtn: document.querySelector("#closeBtn"),
-  saveBtn: document.querySelector("#saveBtn"),
-  form: document.querySelector("form"),
-  table: document.querySelector("table"),
-  tableBody: document.querySelector("tbody"),
-  priorityList: document.querySelector("#priority"),
-  allBtn: document.querySelector('[data-sort="all"]'),
-  procBtn: document.querySelector('[data-sort="process"]'),
-  completBtn: document.querySelector('[data-sort="completed"]'),
+  todoFormSection: document.querySelector(".todo-form"),
+  todoSection: document.querySelector(".todo"),
+  addButton: document.querySelector("#addBtn"),
+  closeButton: document.querySelector("#closeBtn"),
+  saveButton: document.querySelector("#saveBtn"),
+  formElement: document.querySelector("form"),
+  tableElement: document.querySelector("table"),
+  tableBodyElement: document.querySelector("tbody"),
+  priorityListElement: document.querySelector("#priority"),
+  allFilterButton: document.querySelector('[data-sort="all"]'),
+  processFilterButton: document.querySelector('[data-sort="process"]'),
+  completedFilterButton: document.querySelector('[data-sort="completed"]'),
 };
 
-const optionSucces = {
+const successNotifyOptions = {
   text: "Задача добавленна!",
   delay: 3000,
   addClass: "pnotify-success",
 };
 
-const optionError = {
+const errorNotifyOptions = {
   text: "Заполните все поля!",
   delay: 3000,
   addClass: "pnotify-error",
 };
 
-refs.addBtn.addEventListener("click", onOpenAddToDo);
-refs.closeBtn.addEventListener("click", onCloseAddTodo);
-refs.form.addEventListener("submit", onSubmitForm);
-refs.form.addEventListener(
+refs.addButton.addEventListener("click", openAddForm);
+refs.closeButton.addEventListener("click", closeAddForm);
+refs.formElement.addEventListener("submit", handleFormSubmit);
+refs.formElement.addEventListener(
   "input",
-  throttle(() => onSetLocaleStorage(STORAGE_KEY, getFormData()), 1000)
+  throttle(() => saveFormData(STORAGE_KEY, collectFormData()), 1000)
 );
-refs.table.addEventListener("click", onDeleteTask);
-refs.allBtn.addEventListener("click", () => sortByStatus("all"));
-refs.procBtn.addEventListener("click", () => sortByStatus("process"));
-refs.completBtn.addEventListener("click", () => sortByStatus("completed"));
+refs.tableElement.addEventListener("click", handleTableClick);
+refs.allFilterButton.addEventListener("click", () => filterByStatus("all"));
+refs.processFilterButton.addEventListener("click", () => filterByStatus("process"));
+refs.completedFilterButton.addEventListener("click", () => filterByStatus("completed"));
 
-getTasks().then((tasks) => examDB(tasks));
+fetchTasks().then((tasks) => renderTasks(tasks));
 
-populateInput();
+populateFormFromStorage();
 
-function getFormData() {
+function collectFormData() {
   return {
     task: document.querySelector("#name").value.trim(),
     description: document.querySelector("#description").value.trim(),
     category: document.querySelector("#category").value.trim(),
-    when: `${refs.form.querySelector("#date").value} ${
-      refs.form.querySelector("#time").value
+    when: `${refs.formElement.querySelector("#date").value} ${
+      refs.formElement.querySelector("#time").value
     }`,
-    priority: refs.priorityList.querySelector("li:first-child").textContent,
+    priority: refs.priorityListElement.querySelector("li:first-child").textContent,
     fulfillment: document.querySelector("#fulfillment").value.trim() + "%",
   };
 }
 
-function setFormData({
+function populateForm({
   task,
   description,
   category,
@@ -78,35 +78,33 @@ function setFormData({
     document.querySelector("#category").value = category;
     document.querySelector("#date").value = date || "";
     document.querySelector("#time").value = time || "";
-    refs.priorityList.querySelector("li:first-child").textContent = priority;
+    refs.priorityListElement.querySelector("li:first-child").textContent = priority;
     document.querySelector("#fulfillment").value = parseInt(fulfillment);
   }
 }
 
-function examDB(tasks) {
-  {
-    if (tasks.length === 0) {
-      textNoneTask();
-    } else {
-      tasks.map((task) => createTask(task));
-    }
+function renderTasks(tasks) {
+  if (tasks.length === 0) {
+    renderNoTasksMessage();
+  } else {
+    tasks.forEach(appendTask);
   }
 }
 
-function onOpenAddToDo() {
-  refs.ToDo.classList.add("is-hidden");
-  refs.addToDo.classList.remove("is-hidden");
+function openAddForm() {
+  refs.todoSection.classList.add("is-hidden");
+  refs.todoFormSection.classList.remove("is-hidden");
 }
 
-function onCloseAddTodo() {
-  refs.ToDo.classList.remove("is-hidden");
-  refs.addToDo.classList.add("is-hidden");
+function closeAddForm() {
+  refs.todoSection.classList.remove("is-hidden");
+  refs.todoFormSection.classList.add("is-hidden");
 }
 
-function addTask(data) {
+function submitTask(data) {
   if (document.querySelector("#noneTask")) {
     document.querySelector("#noneTask").innerHTML = "";
-    refs.tableBody.insertAdjacentHTML(
+    refs.tableBodyElement.insertAdjacentHTML(
       "afterbegin",
       `
         <thead>
@@ -124,47 +122,47 @@ function addTask(data) {
   }
 
   if (!data.task || !data.description || !data.category) {
-    error(optionError);
+    error(errorNotifyOptions);
   } else {
-    addTasks(data).then((data) => createTask(data));
-    success(optionSucces);
-    onCloseAddTodo();
+    postTask(data).then((data) => appendTask(data));
+    success(successNotifyOptions);
+    closeAddForm();
   }
 }
 
-function onSubmitForm(e) {
+function handleFormSubmit(e) {
   e.preventDefault();
-  const formData = getFormData();
+  const formData = collectFormData();
 
   if (!formData.task || !formData.description || !formData.category) {
-    error(optionError);
+    error(errorNotifyOptions);
     return;
   }
 
   if (editingTaskId) {
-    return updateTask(editingTaskId, formData).then(() => {
+    return updateTaskOnServer(editingTaskId, formData).then(() => {
       success({ text: "Задача обновлена!" });
 
-      const oldRow = refs.tableBody.querySelector(
+      const oldRow = refs.tableBodyElement.querySelector(
         `tr[data-id="${editingTaskId}"]`
       );
       if (oldRow) oldRow.remove();
 
-      createTask({ id: editingTaskId, ...formData });
+      appendTask({ id: editingTaskId, ...formData });
 
       editingTaskId = null;
       e.target.reset();
-      onCloseAddTodo();
-      onResetForm(STORAGE_KEY);
+      closeAddForm();
+      clearStorage(STORAGE_KEY);
     });
   }
 
-  addTask(formData); // теперь это выполнится только если editingTaskId === null
+  submitTask(formData); // теперь это выполнится только если editingTaskId === null
   e.target.reset();
-  onResetForm(STORAGE_KEY);
+  clearStorage(STORAGE_KEY);
 }
 
-function createTask({
+function appendTask({
   id,
   task,
   description,
@@ -173,7 +171,7 @@ function createTask({
   priority,
   fulfillment,
 }) {
-  refs.tableBody.insertAdjacentHTML(
+  refs.tableBodyElement.insertAdjacentHTML(
     "beforeend",
     `
     <tr data-id="${id}">
@@ -198,8 +196,8 @@ function createTask({
   );
 }
 
-function addTasks(data) {
-  return fetch(`${BASE_URL}/ToDo`, {
+function postTask(data) {
+  return fetch(`${API_URL}/ToDo`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -208,28 +206,28 @@ function addTasks(data) {
   }).then((response) => response.json());
 }
 
-function getTasks() {
-  return fetch(`${BASE_URL}/ToDo`).then((response) => response.json());
+function fetchTasks() {
+  return fetch(`${API_URL}/ToDo`).then((response) => response.json());
 }
 
-function getTaskById(id) {
-  return fetch(`${BASE_URL}/ToDo/${id}`).then((response) => response.json());
+function fetchTaskById(id) {
+  return fetch(`${API_URL}/ToDo/${id}`).then((response) => response.json());
 }
 
-async function changeData(id) {
+async function loadTaskForEditing(id) {
   editingTaskId = id;
 
   try {
-    const task = await getTaskById(id);
-    setFormData(task);
-    onOpenAddToDo();
+    const task = await fetchTaskById(id);
+    populateForm(task);
+    openAddForm();
   } catch {
     error({ text: "Не удалось загрузить задачу для редактирования" });
   }
 }
 
-function updateTask(id, data) {
-  return fetch(`${BASE_URL}/ToDo/${id}`, {
+function updateTaskOnServer(id, data) {
+  return fetch(`${API_URL}/ToDo/${id}`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -238,7 +236,7 @@ function updateTask(id, data) {
   }).then((res) => res.json());
 }
 
-function onDeleteTask(e) {
+function handleTableClick(e) {
   const btn = e.target.closest("button");
   if (!btn) return;
 
@@ -247,91 +245,91 @@ function onDeleteTask(e) {
   if (!id) return;
 
   if (btn.dataset.btn === "del") {
-    deleteTask(id)
+    deleteTaskFromServer(id)
       .then(() => {
         row.remove();
         success({ text: "Задача удалена!" });
 
-        const remainingTasks = refs.table.querySelectorAll("tr[data-id]");
+        const remainingTasks = refs.tableElement.querySelectorAll("tr[data-id]");
         if (remainingTasks.length === 0) {
-          textNoneTask();
+          renderNoTasksMessage();
         }
       })
       .catch(() => error({ text: "Ошибка при удалении!" }));
   } else if (btn.dataset.btn === "edit") {
-    changeData(id);
+    loadTaskForEditing(id);
   }
 }
 
-function deleteTask(id) {
-  return fetch(`${BASE_URL}/ToDo/${id}`, {
+function deleteTaskFromServer(id) {
+  return fetch(`${API_URL}/ToDo/${id}`, {
     method: "DELETE",
   }).then((response) => response.json());
 }
 
-function textNoneTask() {
-  refs.tableBody.innerHTML = '<p id="noneTask">У вас еще нет задач!</p>';
+function renderNoTasksMessage() {
+  refs.tableBodyElement.innerHTML = '<p id="noneTask">У вас еще нет задач!</p>';
 }
 
-function onResetForm(STORAGE_KEY) {
+function clearStorage(STORAGE_KEY) {
   localStorage.removeItem(STORAGE_KEY);
 }
 
-function onSetLocaleStorage(STORAGE_KEY, data) {
+function saveFormData(STORAGE_KEY, data) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
 
-function populateInput() {
+function populateFormFromStorage() {
   const taskData = localStorage.getItem("task");
   try {
-    setFormData(JSON.parse(taskData));
+    populateForm(JSON.parse(taskData));
   } catch {
     return;
   }
 }
 
-refs.priorityList.addEventListener("click", list);
+refs.priorityListElement.addEventListener("click", handlePriorityClick);
 
-function list(e) {
+function handlePriorityClick(e) {
   if (
     e.target.tagName !== "LI" ||
-    e.target === refs.priorityList.firstElementChild
+    e.target === refs.priorityListElement.firstElementChild
   )
     return;
 
   const selectedItem = e.target;
 
-  refs.priorityList.removeChild(selectedItem);
-  refs.priorityList.insertBefore(
+  refs.priorityListElement.removeChild(selectedItem);
+  refs.priorityListElement.insertBefore(
     selectedItem,
-    refs.priorityList.firstElementChild
+    refs.priorityListElement.firstElementChild
   );
 
-  onSetLocaleStorage(STORAGE_KEY, getFormData());
+  saveFormData(STORAGE_KEY, collectFormData());
 }
 
-function sortByStatus(mode) {
-  refs.tableBody.innerHTML = "";
+function filterByStatus(mode) {
+  refs.tableBodyElement.innerHTML = "";
 
-  getTasks().then((tasks) => {
+  fetchTasks().then((tasks) => {
     let filtered = null;
     if (mode === "all") {
       filtered = tasks;
-      refs.procBtn.classList.remove("btn__blue");
-      refs.completBtn.classList.remove("btn__blue");
-      refs.allBtn.classList.add("btn__blue");
+      refs.processFilterButton.classList.remove("todo__filter-button--active");
+      refs.completedFilterButton.classList.remove("todo__filter-button--active");
+      refs.allFilterButton.classList.add("todo__filter-button--active");
     } else if (mode === "process") {
-      refs.procBtn.classList.add("btn__blue");
-      refs.completBtn.classList.remove("btn__blue");
-      refs.allBtn.classList.remove("btn__blue");
+      refs.processFilterButton.classList.add("todo__filter-button--active");
+      refs.completedFilterButton.classList.remove("todo__filter-button--active");
+      refs.allFilterButton.classList.remove("todo__filter-button--active");
       filtered = tasks.filter((task) => {
         const num = parseInt(task.fulfillment);
         return num < 100;
       });
     } else if (mode === "completed") {
-      refs.procBtn.classList.remove("btn__blue");
-      refs.completBtn.classList.add("btn__blue");
-      refs.allBtn.classList.remove("btn__blue");
+      refs.processFilterButton.classList.remove("todo__filter-button--active");
+      refs.completedFilterButton.classList.add("todo__filter-button--active");
+      refs.allFilterButton.classList.remove("todo__filter-button--active");
       filtered = tasks.filter((task) => {
         const num = parseInt(task.fulfillment);
         return num == 100;
@@ -339,9 +337,9 @@ function sortByStatus(mode) {
     }
 
     if (filtered.length === 0) {
-      textNoneTask();
+      renderNoTasksMessage();
     } else {
-      filtered.forEach(createTask);
+      filtered.forEach(appendTask);
     }
   });
 }

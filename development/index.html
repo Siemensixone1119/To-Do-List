@@ -14,20 +14,20 @@
 <body>
   <main>
     <h1>To-Do List</h1>
-    <div class="ToDo">
-      <div class=" btn__cont">
-        <button class="btn" id="addBtn">
+    <div class="todo">
+      <div class="todo__controls">
+        <button class="todo__add-button" id="addBtn">
           <p>Add a new to-do</p>
         </button>
-        <ul class="btn__cont--do">
+        <ul class="todo__filters">
           <li>
-            <button class="btn__blue" data-sort="all">All</button>
+            <button class="todo__filter-button todo__filter-button--active" data-sort="all">All</button>
           </li>
           <li>
-            <button data-sort="process">To-do</button>
+            <button class="todo__filter-button" data-sort="process">To-do</button>
           </li>
           <li>
-            <button data-sort="completed">Completed</button>
+            <button class="todo__filter-button" data-sort="completed">Completed</button>
           </li>
         </ul>
       </div>
@@ -46,35 +46,35 @@
 
 
 
-    <div class="is-hidden addToDo">
+    <div class="is-hidden todo-form">
       <form action="">
         <h2>Add a new to-do:</h2>
-        <div class="form">
-          <div class="form__1">
-            <div class="label">
+        <div class="todo-form__fields">
+          <div class="todo-form__column-left">
+            <div class="todo-form__field">
               <label for="name">Name:</label>
               <input type="text" placeholder="name for the task you’re going to do" id="name">
             </div>
-            <div class="label">
+            <div class="todo-form__field">
               <label for="description">Description:</label>
               <input type="text" placeholder="a short description of the task - can be omitted" id="description">
             </div>
-            <div class="label">
+            <div class="todo-form__field">
               <label for="category">Category:</label>
               <input type="text" placeholder="e.g. household, school, work" id="category">
             </div>
-            <div class="label">
+            <div class="todo-form__field">
               <label for="date">Date:</label>
               <input type="date" placeholder="dd/mm/yyyy  - can be omitted" id="date">
             </div>
-            <div class="label">
+            <div class="todo-form__field">
               <label for="time">Time:</label>
               <input type="time" placeholder="hh:mm - can be omitted" id="time">
             </div>
           </div>
-          <div class="wrap">
-            <div class="form__2">
-              <div class="label">
+          <div class="todo-form__sidebar">
+            <div class="todo-form__column-right">
+              <div class="todo-form__field">
                 <label for="priority">Priority:</label>
                 <ul class="custom-select" id="priority">
                   <li selected>Low</li>
@@ -83,16 +83,16 @@
                 </ul>
               </div>
 
-              <div class="label">
+              <div class="todo-form__field">
                 <label for="fulfillment">Fulfillment:</label>
-                <input type="range" id="fulfillment" class="range" min="0" max="100" value="0">
+                <input type="range" id="fulfillment" class="todo-form__range" min="0" max="100" value="0">
               </div>
             </div>
 
 
-            <ul class="btn__list">
+            <ul class="todo-form__actions">
               <li>
-                <button class="btn1" type="submit" id="saveBtn">Save</button>
+                <button class="todo-form__save-button" type="submit" id="saveBtn">Save</button>
               </li>
               <li>
                 <button id="closeBtn">Cancel</button>
