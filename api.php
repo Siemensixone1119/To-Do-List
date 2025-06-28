@@ -17,6 +17,17 @@ $id = isset($_GET['id']) ? intval($_GET['id']) : null;
 
 // Получить все задачи
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
+    if ($id !== null) {
+        foreach ($tasks as $task) {
+            if ($task['id'] === $id) {
+                echo json_encode($task, JSON_UNESCAPED_UNICODE);
+                exit;
+            }
+        }
+        http_response_code(404);
+        echo json_encode(["error" => "Not found"]);
+        exit;
+    }
     echo json_encode($tasks, JSON_UNESCAPED_UNICODE);
     exit;
 }
